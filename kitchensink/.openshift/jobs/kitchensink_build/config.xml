@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>Trigger Kitchensink S2I Build</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.21.1">
+      <projectUrl>https://github.com/ghoelzer-rht/jboss-eap-kitchensink.git/</projectUrl>
+      <displayName></displayName>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.5.3">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/ghoelzer-rht/jboss-eap-kitchensink.git</url>
+        <credentialsId>055c1d1a-b880-44fe-bf36-97c85a3efa51</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <authToken>secret123</authToken>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <com.openshift.jenkins.plugins.pipeline.OpenShiftBuilder plugin="openshift-pipeline@1.0.13">
+      <apiURL></apiURL>
+      <namespace></namespace>
+      <authToken></authToken>
+      <verbose>false</verbose>
+      <bldCfg>quickstart</bldCfg>
+      <commitID></commitID>
+      <buildName></buildName>
+      <showBuildLogs>true</showBuildLogs>
+      <checkForTriggeredDeployments>false</checkForTriggeredDeployments>
+      <waitTime></waitTime>
+    </com.openshift.jenkins.plugins.pipeline.OpenShiftBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

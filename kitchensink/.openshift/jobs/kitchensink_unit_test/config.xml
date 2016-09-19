@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <jenkins.triggers.ReverseBuildTrigger>
+      <spec></spec>
+      <upstreamProjects>kitchensink_build, </upstreamProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </jenkins.triggers.ReverseBuildTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo &quot;Checking kitchensink build/development deployment result status&quot;
+sleep 15
+
+rc=1
+count=0
+attempts=100
+while [ $rc -ne 0 -a $count -lt $attempts ]; do
+  status=`curl -I http://quickstart-dev-kitchensink.rhel-cdk.10.1.2.2.xip.io/`
+
+  if [[ $status == *&quot;HTTP/1.1 200 OK&quot;* ]]; then
+    echo &quot;Build completed and deployed successfully&quot;
+    rc=0
+  else
+    count=$(($count+1))
+    echo &quot;Attempt $count/$attempts&quot;
+    sleep 5
+  fi
+done
+
+if [ $rc -ne 0 ]; then
+    echo &quot;Fail: Build deployment did not complete in a reasonable period of time&quot;
+    exit 1
+fi</command>
+    </hudson.tasks.Shell>
+    <com.openshift.jenkins.plugins.pipeline.OpenShiftImageTagger plugin="openshift-pipeline@1.0.13">
+      <apiURL></apiURL>
+      <namespace></namespace>
+      <authToken></authToken>
+      <verbose>true</verbose>
+      <testTag>latest</testTag>
+      <prodTag>test</prodTag>
+      <testStream>quickstart</testStream>
+      <prodStream>quickstart</prodStream>
+      <destinationNamespace></destinationNamespace>
+      <destinationAuthToken></destinationAuthToken>
+      <alias>false</alias>
+    </com.openshift.jenkins.plugins.pipeline.OpenShiftImageTagger>
+  </builders>
+  <publishers>
+    <au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger plugin="build-pipeline-plugin@1.5.4">
+      <configs/>
+      <downstreamProjectNames>kitchensink_promote2prod</downstreamProjectNames>
+    </au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>
